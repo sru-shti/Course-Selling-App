@@ -1,5 +1,6 @@
 const {Router} =require("express");
 const adminRouter= Router();
+const {adminModel} =require("../db");
 
 
  adminRouter.post("/signup",function(req,res){
@@ -17,24 +18,24 @@ const adminRouter= Router();
 adminRouter.post("/course",function(req,res){
     //admin can create the course
     res.json({
-        message: "signin endpoint"
+        message: " create the course"
     })
 })
 
 adminRouter.put("/course",function(req,res){
     //admin can change the course i.e price,name
     res.json({
-        message: "signin endpoint"
+        message: "change the course"
     })
 })
 
 adminRouter.get("/course",function(req,res){
     //admin can get course in bulk
     res.json({
-        message: "signin endpoint"
+        message: "admin can get course"
     })
 })
 
-MediaSourceHandle.exports={
+module.exports={
     adminRouter:adminRouter
 }
