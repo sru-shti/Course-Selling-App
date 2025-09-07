@@ -1,3 +1,4 @@
+//  68bd84524b4903b4d74a0107
 const {Router} =require("express");
 const adminRouter= Router();
 const {adminModel, courseModel} =require("../db");
@@ -32,9 +33,9 @@ const { adminMiddleware } = require("../middleware/admin.js");
         password:password
     });
     if(admin){
-        jwt.sign({
+        const token=jwt.sign({
             id:admin._id // stored in mongo
-        },JWT_USER_PASSWORD);
+        },JWT_ADMIN_PASSWORD);
 
         // Do cookie logic later
         res.json({
@@ -45,9 +46,6 @@ const { adminMiddleware } = require("../middleware/admin.js");
             message:"incorrect credentials"
         })
     }
-    res.json({
-        message: "signin succeeded"
-    })
 })
 // /api/v1/course/course
 adminRouter.post("/course",adminMiddleware ,async function(req,res){
@@ -94,6 +92,7 @@ adminRouter.put("/course",adminMiddleware,async function(req,res){
 adminRouter.get("/course/bulk",adminMiddleware,async function(req,res){
     //admin can get course in bulk
    const adminId=req.userId;
+   
     const courses= await courseModel.find({
         createrId:adminId
       });

@@ -14,8 +14,16 @@ app.use("/api/v1/admin",adminRouter);
 app.use("/api/v1/course",courseRouter);
 
 async function main(){
-    await mongoose.connect ("process.env.MONGO_URL")
-app.listen(3000);
-}
+    try{
+        await mongoose.connect (process.env.MONGO_URL)
+console.log(" Connected to MongoDB");
+
+    app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+        });
+    } catch (err) {
+        console.error(" Failed to start server:", err);
+    }
+    }
 
 main();
