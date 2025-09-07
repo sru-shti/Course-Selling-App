@@ -5,6 +5,7 @@ const jwt=require("jsonwebtoken");
 // becrypt,zod ,jsonwebtoken for password auth
 
 const { JWT_ADMIN_PASSWORD }=require("../config.js");
+const { adminMiddleware } = require("../middleware/admin.js");
 
  adminRouter.post("/signup",async function(req,res){
    const {email,password,firstName,lastName} = req.body; //instead can use ( email=req.body.email)
@@ -49,7 +50,7 @@ const { JWT_ADMIN_PASSWORD }=require("../config.js");
     })
 })
 // /api/v1/course/course
-adminRouter.post("/course",adminmiddleware ,async function(req,res){
+adminRouter.post("/course",adminMiddleware ,async function(req,res){
     const adminId=req.userId;
     //admin can create the course=userId
 
@@ -69,18 +70,36 @@ adminRouter.post("/course",adminmiddleware ,async function(req,res){
     })
 })
 
-adminRouter.put("/course",function(req,res){
+adminRouter.put("/course",adminMiddleware,async function(req,res){
     //admin can change the course i.e price,name
+     const adminId=req.userId;
 
+    const {title,description, imgUrl, price,courseId}=req.body;
+
+    const course= await courseModel.updateOne({
+        _id:courseId,
+        createrId:adminId
+        },{
+        title:title,
+        description:description,
+        imgUrl:imgUrl,
+        price:price
+      })
     res.json({
-        message: "change the course"
+        message: "Course updated",
+        courseId:course._id
     })
 })
 
-adminRouter.get("/course/bulk",function(req,res){
+adminRouter.get("/course/bulk",adminMiddleware,async function(req,res){
     //admin can get course in bulk
+   const adminId=req.userId;
+    const courses= await courseModel.find({
+        createrId:adminId
+      });
     res.json({
-        message: "admin can get course"
+        message: "Course updated",
+        courses
     })
 })
 
