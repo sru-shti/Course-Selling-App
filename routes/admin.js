@@ -1,10 +1,10 @@
 const {Router} =require("express");
 const adminRouter= Router();
-const {adminModel} =require("../db");
+const {adminModel, courseModel} =require("../db");
 const jwt=require("jsonwebtoken");
 // becrypt,zod ,jsonwebtoken for password auth
 
-const JWT_ADMIN_PASSWORD ="ghj123"
+const { JWT_ADMIN_PASSWORD }=require("../config.js");
 
  adminRouter.post("/signup",async function(req,res){
    const {email,password,firstName,lastName} = req.body; //instead can use ( email=req.body.email)
@@ -49,15 +49,29 @@ const JWT_ADMIN_PASSWORD ="ghj123"
     })
 })
 // /api/v1/course/course
-adminRouter.post("/course",function(req,res){
-    //admin can create the course
+adminRouter.post("/course",adminmiddleware ,async function(req,res){
+    const adminId=req.userId;
+    //admin can create the course=userId
+
+    const {title,description, imgUrl, price}=req.body;
+
+    const course=await courseModel.create({
+        title:title,
+        description:description,
+        imgUrl:imgUrl,
+        price:price,
+        createrId:adminId
+    })
     res.json({
-        message: " create the course"
+        message: "Course created",
+        courseId:course._id
+
     })
 })
 
 adminRouter.put("/course",function(req,res){
     //admin can change the course i.e price,name
+
     res.json({
         message: "change the course"
     })

@@ -2,7 +2,7 @@ const {Router} =require("express");
 const courseRouter = Router();
 
 courseRouter.post("/purchase_course",function(req,res){
-    //u would exspect the user to pau u for courses
+    //u would exspect the user to pay u for courses
     res.json({
         message: "signup endpoint"
     })
