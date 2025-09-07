@@ -12,7 +12,7 @@ app.use("/api/v1/admin",adminRouter);
 app.use("/api/v1/course",courseRouter);
 
 async function main(){
-    await mongoose.connect ("mongodb+srv://chobhesrushti:Mz9t9vMkkoHvvHd7@cluster0.hu82ya0.mongodb.net/Srushti-coursera-app")
+    await mongoose.connect ("")
 app.listen(3000);
 }
 
