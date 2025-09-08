@@ -3,6 +3,7 @@ const{userModel} =require("../db");
 const jwt=require("jsonwebtoken")
 const { JWT_USER_PASSWORD }=require("../config.js");
 const userRouter = Router();
+const {userMiddleware} =require("../middleware/user");
 
  userRouter.post("/signup",async function(req,res){
 const {email,password,firstName,lastName} = req.body; //instead can use ( email=req.body.email)
@@ -42,14 +43,17 @@ const {email,password,firstName,lastName} = req.body; //instead can use ( email=
             message:"incorrect credentials"
         })
     }
-    res.json({
-        message: "signin succeeded"
-    })
 })
 
- userRouter.get("/purchases",function(req,res){
+ userRouter.get("/purchases",userMiddleware,async function(req,res){
+   const userId =req.userId;
+
+ const purchases=   await purchaseModel.find({
+        userId
+    })
+
     res.json({
-        message: "signup endpoint"
+       purchases
     })
 })
 module.exports={
