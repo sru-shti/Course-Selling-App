@@ -1,5 +1,5 @@
 const {Router} =require("express");
-const{userModel} =require("../db");
+const{userModel,purchaseModel, courseModel} =require("../db");
 const jwt=require("jsonwebtoken")
 const { JWT_USER_PASSWORD }=require("../config.js");
 const userRouter = Router();
@@ -30,7 +30,7 @@ const {email,password,firstName,lastName} = req.body; //instead can use ( email=
         password:password
     });
     if(user){
-        jwt.sign({
+        const token =jwt.sign({
             id:user._id // stored in mongo
         },JWT_USER_PASSWORD);
 
@@ -50,10 +50,20 @@ const {email,password,firstName,lastName} = req.body; //instead can use ( email=
 
  const purchases=   await purchaseModel.find({
         userId
+    });
+
+    let purchaseCourseIds = [];
+    for(let i=0;i<purchases.length;i++){
+        purchaseCourseIds.push(purchases[i].courseId)
+    }
+
+    const coursesData =await courseModel.find({
+        _id: {$in:purchaseCourseIds}
     })
 
     res.json({
-       purchases
+       purchases,
+       coursesData
     })
 })
 module.exports={
