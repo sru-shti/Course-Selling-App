@@ -2,6 +2,7 @@ require("dotenv").config()
 
 const express=require("express");
 const mongoose=require("mongoose");
+const cors = require("cors");
 
 const { userRouter} =require("./routes/user");
 const {courseRouter} =require("./routes/course");
@@ -12,6 +13,11 @@ app.use(express.json());
 app.use("/api/v1/user",userRouter);
 app.use("/api/v1/admin",adminRouter);
 app.use("/api/v1/course",courseRouter);
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 
 async function main(){
     try{
