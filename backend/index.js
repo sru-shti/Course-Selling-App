@@ -1,35 +1,35 @@
-require("dotenv").config()
+require("dotenv").config();
 
-const express=require("express");
-const mongoose=require("mongoose");
+const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
 
-const { userRouter} =require("./routes/user");
-const {courseRouter} =require("./routes/course");
-const {adminRouter} =require("./routes/admin");
-const app=express();
+const { userRouter } = require("./routes/user");
+const { courseRouter } = require("./routes/course");
+const { adminRouter } = require("./routes/admin"); // ✅ match named export
+
+const app = express();
+
+// Middleware order
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 
-app.use("/api/v1/user",userRouter);
-app.use("/api/v1/admin",adminRouter);
-app.use("/api/v1/course",courseRouter);
+// Routes
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/course", courseRouter);
 
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
-}));
-
-async function main(){
-    try{
-        await mongoose.connect (process.env.MONGO_URL)
-console.log(" Connected to MongoDB");
+async function main() {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("Connected to MongoDB");
 
     app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
-        });
-    } catch (err) {
-        console.error(" Failed to start server:", err);
-    }
-    }
+      console.log("Server running on http://localhost:3000");
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+  }
+}
 
 main();
