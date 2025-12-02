@@ -11,9 +11,8 @@ export default function MyCourses() {
   useEffect(() => {
     const fetchMyCourses = async () => {
       try {
-        const res = await axiosInstance.get("/user/purchases", {
-          headers: { token },
-        });
+        const res = await axiosInstance.get("/user/purchases");
+        // ❌ REMOVED: Manual headers due to Interceptor
         setCourses(res.data.coursesData);
       } catch (err) {
         console.error(err);

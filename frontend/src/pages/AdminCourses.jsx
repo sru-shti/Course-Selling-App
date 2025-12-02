@@ -11,9 +11,8 @@ export default function AdminCourses() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.get("/admin/course/bulk", {
-          headers: { token },
-        });
+        const res = await axiosInstance.get("/admin/courses"); // 💡 Changed from /admin/course/bulk
+        // ❌ REMOVED: Manual headers due to Interceptor
         setCourses(res.data.courses);
       } catch (err) {
         console.error(err);

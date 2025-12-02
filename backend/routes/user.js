@@ -1,44 +1,94 @@
-// routes/user.js
 const { Router } = require("express");
-const { userModel } = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+
+// --- Imports ---
+const { userModel, purchaseModel, courseModel } = require("../db"); 
 const { JWT_USER_PASSWORD } = require("../config.js");
+const { userMiddleware } = require("../middleware/user"); // Assuming this is the correct path
 
 const userRouter = Router();
 
-// User Signup
-userRouter.post("/signup", async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
+// ------------------------------------
+// 1. Authentication Routes (Public)
+// ------------------------------------
 
-  try {
-    await userModel.create({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-    });
-    res.json({ message: "User signup succeeded" });
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: err.message });
-  }
+// User Signup
+// FULL PATH: /api/v1/user/signup
+userRouter.post("/signup", async (req, res) => {
+    const { email, password, firstName, lastName } = req.body;
+    
+    // 💡 Check if user already exists
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+        return res.status(403).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        await userModel.create({
+            email,
+            password: hashedPassword,
+            firstName,
+            lastName,
+        });
+        res.json({ message: "User signup succeeded" });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: err.message });
+    }
 });
+
 
 // User Signin
+// FULL PATH: /api/v1/user/signin
 userRouter.post("/signin", async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  const user = await userModel.findOne({ email });
-  if (!user) return res.status(403).json({ message: "Incorrect credentials" });
+    // 💡 Normalize email for consistent lookup
+    const normalizedEmail = email.toLowerCase(); 
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(403).json({ message: "Incorrect credentials" });
+    const user = await userModel.findOne({ email: normalizedEmail });
+    if (!user) return res.status(403).json({ message: "Incorrect credentials" });
 
-  const token = jwt.sign({ id: user._id }, JWT_USER_PASSWORD, { expiresIn: "1h" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(403).json({ message: "Incorrect credentials" });
 
-  res.json({ token });
+    // 💡 Include role for the frontend to differentiate
+    const token = jwt.sign({ id: user._id, role: 'user' }, JWT_USER_PASSWORD, { expiresIn: "1h" });
+
+    res.json({ token });
 });
+
+
+// ------------------------------------
+// 2. Protected Routes (Requires userMiddleware)
+// ------------------------------------
+
+// Get Purchased Courses (Needed by MyCourses.jsx)
+// FULL PATH: /api/v1/user/purchases
+userRouter.get("/purchases", userMiddleware, async (req, res) => {
+    // 💡 req.userId is extracted from the JWT by userMiddleware
+    const userId = req.userId; 
+
+    try {
+        // 1. Find all purchase records for this user
+        const purchases = await purchaseModel.find({ userId });
+        
+        // 2. Extract the course IDs from the purchase records
+        const courseIds = purchases.map(purchase => purchase.courseId);
+
+        // 3. Find the course details using the extracted IDs
+        // $in operator finds documents where _id matches any value in the array
+        const coursesData = await courseModel.find({ _id: { $in: courseIds } });
+
+        res.json({ coursesData });
+    } catch (err) {
+        console.error("Error fetching purchases:", err);
+        res.status(500).json({ message: "Failed to fetch purchased courses" });
+    }
+});
+
 
 module.exports = { userRouter };

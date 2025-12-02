@@ -20,9 +20,10 @@ export default function AdminAddCourse() {
     e.preventDefault();
     try {
       const res = await axiosInstance.post(
-        "/admin/course",
-        formData,
-        { headers: { token } }
+        // Correct protected endpoint
+        "/admin/courses", // 💡 Changed from /admin/course to /admin/courses (matching backend plural)
+        formData
+        // ❌ REMOVED: Manual headers due to Interceptor
       );
       alert("Course added successfully! ID: " + res.data.courseId);
     } catch (err) {

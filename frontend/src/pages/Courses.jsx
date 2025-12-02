@@ -5,13 +5,14 @@ import { useAuth } from "../context/AuthContext";
 import CourseCard from "../components/CourseCard";
 
 export default function Courses() {
-  const { token } = useAuth();
+  const { user } = useAuth(); // Changed from token to user for clarity
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axiosInstance.get("/course/preview");
+        // Correct path for public course list
+        const res = await axiosInstance.get("/course/preview"); 
         setCourses(res.data.courses);
       } catch (err) {
         console.error(err);
@@ -22,12 +23,12 @@ export default function Courses() {
   }, []);
 
   const purchaseCourse = async (courseId) => {
-    if (!token) return alert("Please login first");
+    if (!user) return alert("Please login first"); // Check user object instead of raw token
     try {
       await axiosInstance.post(
-        "/course/purchase_course",
-        { courseId },
-        { headers: { token } }
+        "/course/purchase_course", // Correct protected endpoint
+        { courseId }
+        // ❌ REMOVED: Manual headers due to Interceptor
       );
       alert("Course purchased successfully!");
     } catch (err) {
@@ -35,6 +36,7 @@ export default function Courses() {
       alert("Error purchasing course");
     }
   };
+// ... rest of the component
 
   return (
     <div className="p-4">

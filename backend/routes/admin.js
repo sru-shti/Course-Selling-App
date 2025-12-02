@@ -1,45 +1,67 @@
+// routes/admin.js
 const { Router } = require("express");
 const adminRouter = Router(); 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { authenticateAdmin } = require("../middleware/adminAuth"); // Custom middleware
 const { adminModel, courseModel } = require("../db");
 const { JWT_ADMIN_PASSWORD } = require("../config.js");
 
-// Admin Signup
-adminRouter.post("/signup", async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
 
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await adminModel.create({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-    });
-
-    res.json({ message: "Admin signup succeeded" });
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: err.message });
-  }
-});
-
-
-// Admin Signin
+// Admin Signin (Public)
 adminRouter.post("/signin", async (req, res) => {
   const { email, password } = req.body;
+  const normalizedEmail = email.toLowerCase(); 
 
-  const admin = await adminModel.findOne({ email });
+  const admin = await adminModel.findOne({ email: normalizedEmail });
   if (!admin) return res.status(403).json({ message: "Incorrect credentials" });
 
   const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) return res.status(403).json({ message: "Incorrect credentials" });
 
-  const token = jwt.sign({ id: admin._id }, JWT_ADMIN_PASSWORD, { expiresIn: "1h" });
+  // 💡 Include role for the frontend
+  const token = jwt.sign({ id: admin._id, role: 'admin' }, JWT_ADMIN_PASSWORD, { expiresIn: "1h" });
 
-  res.json({ token });
+  res.json({ token, role: 'admin' });
 });
+
+
+// --- PROTECTED ADMIN ROUTES ---
+
+// Admin Add Course (Requires Auth)
+// FULL PATH: /api/v1/admin/courses
+adminRouter.post("/courses", authenticateAdmin, async (req, res) => {
+  const { title, description, price, imgUrl } = req.body;
+  const createrId = req.adminId; // ID extracted from JWT by middleware
+
+  try {
+    const newCourse = await courseModel.create({
+      title,
+      description,
+      price,
+      imgUrl,
+      createrId,
+    });
+    res.json({ message: "Course created successfully", courseId: newCourse._id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create course" });
+  }
+});
+
+// Admin Get Courses (Requires Auth)
+// FULL PATH: /api/v1/admin/courses
+adminRouter.get("/courses", authenticateAdmin, async (req, res) => {
+  const createrId = req.adminId;
+  try {
+    // Only fetch courses created by this admin
+    const courses = await courseModel.find({ createrId });
+    res.json({ courses });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch admin courses" });
+  }
+});
+
 
 module.exports = { adminRouter };
