@@ -3,14 +3,17 @@ const { Router } = require("express");
 const adminRouter = Router(); 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { authenticateAdmin } = require("../middleware/adminAuth"); // Custom middleware
+const { authenticateAdmin } = require("../middleware/adminAuth"); 
 const { adminModel, courseModel } = require("../db");
 const { JWT_ADMIN_PASSWORD } = require("../config.js");
 
+// 🛑 Admin Signup is commented out for security.
 
 // Admin Signin (Public)
 adminRouter.post("/signin", async (req, res) => {
   const { email, password } = req.body;
+  
+  // 💡 FIX: Normalize email input for consistent lookup
   const normalizedEmail = email.toLowerCase(); 
 
   const admin = await adminModel.findOne({ email: normalizedEmail });
@@ -19,20 +22,16 @@ adminRouter.post("/signin", async (req, res) => {
   const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) return res.status(403).json({ message: "Incorrect credentials" });
 
-  // 💡 Include role for the frontend
   const token = jwt.sign({ id: admin._id, role: 'admin' }, JWT_ADMIN_PASSWORD, { expiresIn: "1h" });
 
   res.json({ token, role: 'admin' });
 });
 
-
-// --- PROTECTED ADMIN ROUTES ---
-
 // Admin Add Course (Requires Auth)
 // FULL PATH: /api/v1/admin/courses
 adminRouter.post("/courses", authenticateAdmin, async (req, res) => {
   const { title, description, price, imgUrl } = req.body;
-  const createrId = req.adminId; // ID extracted from JWT by middleware
+  const createrId = req.adminId;
 
   try {
     const newCourse = await courseModel.create({

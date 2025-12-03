@@ -10,11 +10,18 @@ import MyCourses from "./pages/MyCourses";
 import AdminCourses from "./pages/AdminCourses";
 import AdminAddCourse from "./pages/AdminAddCourse";
 import NotFound from "./pages/NotFound";
+// 🛑 Note: We removed the import for AdminSignup page for security
 
+// Custom Component to enforce login and role access
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, role } = useAuth();
+  
+  // If no user is logged in, redirect to login
   if (!user) return <Navigate to="/login" />;
+  
+  // If adminOnly is true and the user is NOT an admin, redirect to courses page
   if (adminOnly && role !== "admin") return <Navigate to="/courses" />;
+  
   return children;
 }
 
@@ -24,9 +31,18 @@ function App() {
       <AuthProvider>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Courses />} />
+          
+          {/* 💡 FIX: Redirect the root path to /courses to avoid routing conflicts */}
+          <Route path="/" element={<Navigate to="/courses" replace />} />
+
+          {/* 1. Public Routes */}
+          {/* The main public page (or post-login landing page for Users) */}
+          <Route path="/courses" element={<Courses />} /> 
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          {/* 🛑 SECURITY FIX: The /admin/signup route is intentionally missing */}
+          
+          {/* 2. User Protected Routes */}
           <Route
             path="/my-courses"
             element={
@@ -35,6 +51,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
+          {/* 3. Admin Protected Routes (AdminOnly=true) */}
           <Route
             path="/admin/courses"
             element={
@@ -51,6 +69,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          
+          {/* Catch-all for 404s */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
