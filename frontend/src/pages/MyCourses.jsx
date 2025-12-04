@@ -5,12 +5,12 @@ import { useAuth } from "../context/AuthContext";
 import CourseCard from "../components/CourseCard";
 
 export default function MyCourses() {
-  const { token } = useAuth();
+  const { token,loading } = useAuth();
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     // Only attempt to fetch if a token is present
-    if (!token) return; 
+    if (loading || !token) return;
 
     const fetchMyCourses = async () => {
       try {
@@ -24,8 +24,9 @@ export default function MyCourses() {
       }
     };
     fetchMyCourses();
-  }, [token]);
+  }, [token,loading]);
 
+  if (loading) return <p className="p-4">Authenticating your purchases...</p>;
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">My Courses</h2>

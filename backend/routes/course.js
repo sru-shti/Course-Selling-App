@@ -1,3 +1,4 @@
+// routes/course.js (Complete Logic)
 const { Router } = require("express");
 const courseRouter = Router();
 const { userMiddleware } = require("../middleware/user");
@@ -38,17 +39,29 @@ courseRouter.get("/:courseId", async (req, res) => {
 // 3. Purchase a course (User Protected)
 // FULL PATH: /api/v1/course/purchase_course
 courseRouter.post("/purchase_course", userMiddleware, async (req, res) => {
-  const userId = req.userId;
-  const courseId = req.body.courseId;
+    const userId = req.userId; // User ID from JWT
+    const { courseId } = req.body;
 
-  // 💡 Good practice: Check if course exists before purchasing
-   const course = await courseModel.findById(courseId);
-   if (!course) {
-       return res.status(404).json({ message: "Course does not exist" });
-   }
+    try {
+        // Check if the course exists
+        const course = await courseModel.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: "Course not found." });
+        }
 
-  await purchaseModel.create({ userId, courseId });
-  res.json({ message: "You have successfully bought the course" });
+        // Check if the user already purchased it
+        const alreadyPurchased = await purchaseModel.findOne({ userId, courseId });
+        if (alreadyPurchased) {
+            return res.status(400).json({ message: "Course already purchased." });
+        }
+
+        // Create the purchase record
+        await purchaseModel.create({ userId, courseId });
+        res.json({ message: "You have successfully bought the course" });
+    } catch (err) {
+        console.error("Purchase error:", err);
+        res.status(500).json({ message: "Failed to process purchase" });
+    }
 });
 
 

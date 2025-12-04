@@ -12,9 +12,11 @@ export default function Navbar() {
         <Link to="/courses">Courses</Link>
         {user ? (
           <>
-            <Link to="/my-courses">My Courses</Link>
-            {role === "admin" && <Link to="/admin/courses">Admin</Link>}
-            <button onClick={logout}>Logout</button>
+            {/* 💡 FIX: Only show My Courses link if role is NOT 'admin' */}
+        {role !== 'admin' && <Link to="/my-courses">My Courses</Link>}
+        
+        {role === "admin" && <Link to="/admin/courses">Admin Panel</Link>}
+        <button onClick={logout}>Logout</button>
           </>
         ) : (
           <>

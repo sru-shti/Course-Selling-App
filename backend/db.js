@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ObjectId = mongoose.Types.ObjectId;
+
+// Use built-in types for ObjectIds for consistency and better error handling
+const { ObjectId } = mongoose.Schema.Types; 
 
 const userSchema = new Schema({
   email: { type: String, unique: true },
@@ -21,12 +23,14 @@ const courseSchema = new Schema({
   description: String,
   price: Number,
   imgUrl: String,
-  createrId: ObjectId,
+  // 💡 Use Mongoose.Schema.Types.ObjectId for explicit reference
+  createrId: { type: ObjectId, ref: 'admin' }, 
 });
 
 const purchaseSchema = new Schema({
-  userId: ObjectId,
-  courseId: ObjectId,
+  // 💡 Use Mongoose.Schema.Types.ObjectId for explicit reference
+  userId: { type: ObjectId, ref: 'user' },
+  courseId: { type: ObjectId, ref: 'course' },
 });
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);

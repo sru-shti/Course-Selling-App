@@ -1,3 +1,4 @@
+//routes/user.js
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -69,26 +70,22 @@ userRouter.post("/signin", async (req, res) => {
 // Get Purchased Courses (Needed by MyCourses.jsx)
 // FULL PATH: /api/v1/user/purchases
 userRouter.get("/purchases", userMiddleware, async (req, res) => {
-    // 💡 req.userId is extracted from the JWT by userMiddleware
-    const userId = req.userId; 
+    const userId = req.userId; // User ID from JWT
 
     try {
         // 1. Find all purchase records for this user
         const purchases = await purchaseModel.find({ userId });
         
-        // 2. Extract the course IDs from the purchase records
+        // 2. Extract the course IDs
         const courseIds = purchases.map(purchase => purchase.courseId);
 
-        // 3. Find the course details using the extracted IDs
-        // $in operator finds documents where _id matches any value in the array
+        // 3. Find the full course details using the IDs
         const coursesData = await courseModel.find({ _id: { $in: courseIds } });
 
-        res.json({ coursesData });
+        res.json({ coursesData }); // Send this data to MyCourses.jsx
     } catch (err) {
-        console.error("Error fetching purchases:", err);
+        console.error("Purchases fetch error:", err);
         res.status(500).json({ message: "Failed to fetch purchased courses" });
     }
 });
-
-
 module.exports = { userRouter };

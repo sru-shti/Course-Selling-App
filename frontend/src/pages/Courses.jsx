@@ -5,10 +5,11 @@ import { useAuth } from "../context/AuthContext";
 import CourseCard from "../components/CourseCard";
 
 export default function Courses() {
-  const { user } = useAuth(); // Check user object for purchase eligibility
+  const { user,role, loading } = useAuth(); // Check user object for purchase eligibility
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
+    if (loading) return;
     const fetchCourses = async () => {
       try {
         // Correct public route: /api/v1/course/preview
@@ -20,8 +21,10 @@ export default function Courses() {
       }
     };
     fetchCourses();
-  }, []);
+  }, [loading]);
 
+  if (loading) return <p className="p-4">Loading application data...</p>;
+  
   const purchaseCourse = async (courseId) => {
     if (!user) return alert("Please login first to purchase a course.");
     try {
@@ -36,15 +39,19 @@ export default function Courses() {
       alert("Error purchasing course: " + (err.response?.data?.message || err.message));
     }
   };
-
-  return (
+return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">All Courses</h2>
       <div className="grid grid-cols-3 gap-4">
         {courses.length === 0 && <p>No courses available to display.</p>}
         {courses.map((course) => (
-          // onPurchase prop ensures the Buy button is visible
-          <CourseCard key={course._id} course={course} onPurchase={purchaseCourse} /> 
+          // 💡 FIX: Conditionally pass the onPurchase prop
+          <CourseCard 
+            key={course._id} 
+            course={course} 
+            // Only pass the purchase function if the logged-in user is NOT an admin
+            onPurchase={role !== 'admin' ? purchaseCourse : null} 
+          /> 
         ))}
       </div>
     </div>
