@@ -1,36 +1,50 @@
-//pages/CourseDetail.jsx
+// src/pages/CourseDetail.jsx
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosConfig"; // Assuming axiosInstance is imported here
 
 export default function CourseDetail() {
-  const { id } = useParams();
-  const [course, setCourse] = useState(null);
+  const { id } = useParams();
+  const [course, setCourse] = useState(null);
 
-  useEffect(() => {
+  useEffect(() => {
     const fetchCourseDetail = async () => {
       try {
-        // 💡 CRITICAL: Update URL to fetch specific course details
-        const res = await axiosInstance.get(`/course/${id}`); // Assumes backend path: /api/v1/course/:id
-        setCourse(res.data.course); // Assumes backend returns { course: {...} }
+        const res = await axiosInstance.get(`/course/${id}`); 
+        setCourse(res.data.course); 
       } catch (err) {
         console.error("Error fetching course detail:", err);
-        setCourse(null); // Keep loading state or show error
+        setCourse(null); 
       }
     };
-    
-    // Only fetch if id is available
-    if (id) {
-        fetchCourseDetail();
-    }
+    
+    if (id) {
+        fetchCourseDetail();
+    }
   }, [id]);
 
-  if (!course) return <p>Loading...</p>;
+  if (!course) return <p className="course-detail-loading">Loading course details...</p>;
 
-  return (
-    <div>
-      <h2>{course.title}</h2>
-      <p>{course.description}</p>
-      <p>{course.content}</p>
-    </div>
-  );
+  return (
+    <div className="course-detail-container">
+      
+      {/* Header Section */}
+      <div className="course-detail-header">
+        <h2 className="course-detail-title">{course.title}</h2>
+        {/* You could conditionally render the image here if available */}
+        {/* {course.imgUrl && <img src={course.imgUrl} className="course-detail-image" alt={course.title} />} */}
+      </div>
+      
+      {/* Description */}
+      <p className="course-detail-description">{course.description}</p>
+      
+      {/* Main Content */}
+      <div className="course-detail-content">
+        <h3 className="content-heading">Course Content</h3>
+        {/* NOTE: If course.content is a string, you might use dangerouslySetInnerHTML here */}
+        <p>{course.content}</p> 
+      </div>
+      
+    </div>
+  );
 }

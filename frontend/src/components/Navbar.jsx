@@ -3,25 +3,36 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const { user, role, logout } = useAuth();
+  const { user, role, logout } = useAuth();
 
-  return (
-    <nav className="navbar" style={{ display: "flex", justifyContent: "space-between", padding: "1rem", borderBottom: "1px solid #ccc" }}>
+  return (
+    <nav className="app-navbar">
       <h1>CourseSelling</h1>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <Link to="/courses">Courses</Link>
+      <div className="nav-links-container">
+        
+        <Link to="/courses" className="nav-link">Courses</Link>
+        
         {user ? (
+            // FIX: Ensure all authenticated links are within a single fragment (<>)
           <>
-            {/* 💡 FIX: Only show My Courses link if role is NOT 'admin' */}
-        {role !== 'admin' && <Link to="/my-courses">My Courses</Link>}
-        
-        {role === "admin" && <Link to="/admin/courses">Admin Panel</Link>}
-        <button onClick={logout}>Logout</button>
+            {/* User Links */}
+            {role !== 'admin' && (
+                <Link to="/my-courses" className="nav-link">My Courses</Link>
+            )}
+        
+            {/* Admin Link */}
+            {role === "admin" && (
+                <Link to="/admin/courses" className="nav-link admin-link">Admin Panel</Link>
+            )}
+        
+            <button onClick={logout} className="btn-logout">Logout</button>
           </>
         ) : (
+            // FIX: Ensure all unauthenticated links are within a single fragment (<>)
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Signup</Link> 
+            {/* Logged Out Links */}
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/signup" className="nav-link">Signup</Link> 
           </>
         )}
       </div>

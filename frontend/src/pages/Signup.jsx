@@ -32,28 +32,25 @@ export default function Signup() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 p-6 bg-white rounded shadow">
-      <h2 className="text-2xl mb-4 font-semibold">Create Account</h2>
+    // Reusing centralized form container styles
+    <div className="form-container">
+      <form onSubmit={submit} className="form-box signup-form-spacing">
+        <h2>Create Account</h2>
 
-      <form onSubmit={submit} className="space-y-3">
         <input
           required
           placeholder="First Name"
           value={form.firstName}
-          onChange={(e) =>
-            setForm({ ...form, firstName: e.target.value })
-          }
-          className="w-full border px-3 py-2 rounded"
+          onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+          className="input-field"
         />
 
         <input
           required
           placeholder="Last Name"
           value={form.lastName}
-          onChange={(e) =>
-            setForm({ ...form, lastName: e.target.value })
-          }
-          className="w-full border px-3 py-2 rounded"
+          onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+          className="input-field"
         />
 
         <input
@@ -61,10 +58,8 @@ export default function Signup() {
           type="email"
           placeholder="Email"
           value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-          className="w-full border px-3 py-2 rounded"
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          className="input-field"
         />
 
         <input
@@ -72,13 +67,14 @@ export default function Signup() {
           type="password"
           placeholder="Password"
           value={form.password}
-          onChange={(e) =>
-            setForm({ ...form, password: e.target.value })
-          }
-          className="w-full border px-3 py-2 rounded"
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          className="input-field"
         />
 
-        <button className="w-full bg-green-600 text-white px-4 py-2 rounded">
+        <button 
+          className="btn-primary btn-full-width form-button"
+          type="submit"
+        >
           Sign Up
         </button>
       </form>
