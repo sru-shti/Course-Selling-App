@@ -1,0 +1,31 @@
+# --- GLOBAL IGNORES ---
+
+# Dependency directories (ignores node_modules in ALL folders)
+node_modules/
+
+# Environment Variables (CRITICAL - Ignores .env in ALL folders)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor files
+.vscode/
+.idea/
+
+# --- FRONTEND SPECIFIC ---
+# Build output
+dist/
+build/
+
+# --- BACKEND SPECIFIC ---
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*

@@ -39,6 +39,9 @@ export default function Courses() {
 return (
     <div className="courses-page-container">
       <h2 className="page-title">All Courses</h2>
+<header className="hero-section">
+        <h1>Unlock Your Potential</h1>
+      </header>
       <div className="course-list-grid">
         {courses.length === 0 && <p className="no-courses-message">No courses available to display.</p>}
         {courses.map((course) => (

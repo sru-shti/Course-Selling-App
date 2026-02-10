@@ -1,26 +1,33 @@
-//routes/user.js
+// routes/user.js
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { OAuth2Client } = require('google-auth-library'); // <--- 1. NEW IMPORT
 
 // --- Imports ---
 const { userModel, purchaseModel, courseModel } = require("../db"); 
 const { JWT_USER_PASSWORD } = require("../config.js");
-const { userMiddleware } = require("../middleware/user"); // Assuming this is the correct path
+const { userMiddleware } = require("../middleware/user");
 
 const userRouter = Router();
+
+// --- GOOGLE CLIENT SETUP ---
+// ⚠️ PASTE YOUR GOOGLE CLIENT ID HERE (Must match the one in frontend/src/main.jsx)
+const googleClientId = process.env.GOOGLE_CLIENT_ID.trim();
+const client = new OAuth2Client("process.env.GOOGLE_CLIENT_ID"); 
 
 // ------------------------------------
 // 1. Authentication Routes (Public)
 // ------------------------------------
 
 // User Signup
-// FULL PATH: /api/v1/user/signup
 userRouter.post("/signup", async (req, res) => {
     const { email, password, firstName, lastName } = req.body;
     
-    // 💡 Check if user already exists
-    const existingUser = await userModel.findOne({ email });
+    const normalizedEmail = email.toLowerCase(); 
+    
+    const existingUser = await userModel.findOne({ email: normalizedEmail });
+    
     if (existingUser) {
         return res.status(403).json({ message: "User already exists" });
     }
@@ -29,7 +36,7 @@ userRouter.post("/signup", async (req, res) => {
 
     try {
         await userModel.create({
-            email,
+            email: normalizedEmail,
             password: hashedPassword,
             firstName,
             lastName,
@@ -41,25 +48,75 @@ userRouter.post("/signup", async (req, res) => {
     }
 });
 
-
 // User Signin
-// FULL PATH: /api/v1/user/signin
 userRouter.post("/signin", async (req, res) => {
     const { email, password } = req.body;
 
-    // 💡 Normalize email for consistent lookup
     const normalizedEmail = email.toLowerCase(); 
 
     const user = await userModel.findOne({ email: normalizedEmail });
     if (!user) return res.status(403).json({ message: "Incorrect credentials" });
 
+    // If the user was created via Google, they might not have a password
+    if (!user.password) {
+        return res.status(403).json({ message: "Please login with Google" });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(403).json({ message: "Incorrect credentials" });
 
-    // 💡 Include role for the frontend to differentiate
     const token = jwt.sign({ id: user._id, role: 'user' }, JWT_USER_PASSWORD, { expiresIn: "1h" });
 
-    res.json({ token });
+    res.json({ token, firstName: user.firstName });
+});
+
+// --- ✨ NEW GOOGLE LOGIN ROUTE ---
+// FULL PATH: /api/v1/user/google
+userRouter.post("/google", async (req, res) => {
+    const { token } = req.body;
+   console.log("Trimmed ID:", googleClientId);
+
+   try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: googleClientId, // 👈 USE THE TRIMMED VARIABLE
+        });
+        
+        // 2. Get user info from the ticket payload
+        const { email, given_name, family_name, picture } = ticket.getPayload();
+
+        // 3. Check if user exists in our DB
+        let user = await userModel.findOne({ email });
+
+        if (!user) {
+            // 4. If new user, create them automatically
+            user = await userModel.create({
+                email,
+                firstName: given_name,
+                lastName: family_name,
+                password: "", // Google users don't need a local password
+                // imgUrl: picture // Optional: You can save their profile pic if you update your schema
+            });
+        }
+
+        // 5. Generate our own JWT Token so they stay logged in
+        const jwtToken = jwt.sign(
+            { id: user._id, role: 'user' }, 
+            JWT_USER_PASSWORD, 
+            { expiresIn: "1h" }
+        );
+
+        // 6. Send back the token and user data
+        res.json({ 
+            token: jwtToken, 
+            firstName: user.firstName, 
+            email: user.email 
+        });
+
+    } catch (err) {
+        console.error("Google Auth Error:", err);
+        res.status(400).json({ message: "Google authentication failed" });
+    }
 });
 
 
@@ -67,25 +124,20 @@ userRouter.post("/signin", async (req, res) => {
 // 2. Protected Routes (Requires userMiddleware)
 // ------------------------------------
 
-// Get Purchased Courses (Needed by MyCourses.jsx)
-// FULL PATH: /api/v1/user/purchases
+// Get Purchased Courses
 userRouter.get("/purchases", userMiddleware, async (req, res) => {
-    const userId = req.userId; // User ID from JWT
+    const userId = req.userId;
 
     try {
-        // 1. Find all purchase records for this user
         const purchases = await purchaseModel.find({ userId });
-        
-        // 2. Extract the course IDs
         const courseIds = purchases.map(purchase => purchase.courseId);
-
-        // 3. Find the full course details using the IDs
         const coursesData = await courseModel.find({ _id: { $in: courseIds } });
 
-        res.json({ coursesData }); // Send this data to MyCourses.jsx
+        res.json({ coursesData });
     } catch (err) {
         console.error("Purchases fetch error:", err);
         res.status(500).json({ message: "Failed to fetch purchased courses" });
     }
 });
+
 module.exports = { userRouter };

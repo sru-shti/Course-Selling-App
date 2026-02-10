@@ -31,8 +31,9 @@ adminRouter.post("/signin", async (req, res) => {
 // 1. Admin Add Course (POST)
 // Full Path: /api/v1/admin/courses
 adminRouter.post("/courses", authenticateAdmin, async (req, res) => {
-    const { title, description, price, imgUrl } = req.body;
-    const createrId = req.adminId; // ID extracted from JWT
+    // 💡 Added videoUrl here
+    const { title, description, price, imgUrl, videoUrl } = req.body;
+    const creatorId = req.adminId; // 💡 TYPO FIXED: createrId -> creatorId
 
     if (!title || !description || !price || !imgUrl) {
         return res.status(400).json({ message: "All fields are required to create a course." });
@@ -46,9 +47,10 @@ adminRouter.post("/courses", authenticateAdmin, async (req, res) => {
         const newCourse = await courseModel.create({
             title,
             description,
-            price: Number(price), // Ensure price is stored as a number
+            price: Number(price), 
             imgUrl,
-            createrId,
+            videoUrl, // 💡 Saving the video URL
+            creatorId, // 💡 Saving with correct field name
         });
         res.json({ message: "Course created successfully", courseId: newCourse._id });
     } catch (err) {
@@ -60,33 +62,35 @@ adminRouter.post("/courses", authenticateAdmin, async (req, res) => {
 // 2. Get Admin's Courses (GET)
 // Full Path: /api/v1/admin/courses
 adminRouter.get("/courses", authenticateAdmin, async (req, res) => {
-    const createrId = req.adminId;
+    const creatorId = req.adminId; // 💡 TYPO FIXED
 
     try {
         // Find only the courses created by the logged-in admin
-        const courses = await courseModel.find({ createrId });
+        const courses = await courseModel.find({ creatorId }); // 💡 TYPO FIXED
         res.json({ courses });
     } catch (err) {
         console.error("Admin courses fetch error:", err);
         res.status(500).json({ message: "Failed to fetch admin courses" });
     }
 });
-// 3. Update Course (PUT) - **THE FIX IS HERE**
+
+// 3. Update Course (PUT)
 adminRouter.put("/courses/:courseId", authenticateAdmin, async (req, res) => {
     const { courseId } = req.params;
-    const createrId = req.adminId;
+    const creatorId = req.adminId; // 💡 TYPO FIXED
     
-    let objectCourseId, objectCreaterId;
+    let objectCourseId, objectCreatorId;
 
     try {
-        // 💡 FIX 1: Convert string IDs to Mongoose ObjectIds for the query
+        // Convert string IDs to Mongoose ObjectIds for the query
         objectCourseId = new mongoose.Types.ObjectId(courseId);
-        objectCreaterId = new mongoose.Types.ObjectId(createrId);
+        objectCreatorId = new mongoose.Types.ObjectId(creatorId); // 💡 TYPO FIXED
     } catch (e) {
         return res.status(400).json({ message: "Invalid ID format provided." });
     }
 
     const updateData = req.body;
+    // Filter out null/empty values so we don't overwrite with blanks
     const validUpdates = Object.fromEntries(
         Object.entries(updateData).filter(([_, v]) => v !== null && v !== "")
     );
@@ -101,14 +105,13 @@ adminRouter.put("/courses/:courseId", authenticateAdmin, async (req, res) => {
 
     try {
         const updatedCourse = await courseModel.findOneAndUpdate(
-            // 🛑 FIX 2: USE THE CONVERTED OBJECT IDs in the query
-            { _id: objectCourseId, createrId: objectCreaterId }, 
+            // 💡 TYPO FIXED in query
+            { _id: objectCourseId, creatorId: objectCreatorId }, 
             validUpdates,
             { new: true }
         );
 
         if (!updatedCourse) {
-            // This is the error message the client receives when unauthorized or ID is wrong
             return res.status(404).json({ message: "Course not found or unauthorized." });
         }
 
@@ -119,25 +122,23 @@ adminRouter.put("/courses/:courseId", authenticateAdmin, async (req, res) => {
     }
 });
 
-
-// 4. Delete Course (DELETE) - **THE FIX IS HERE**
+// 4. Delete Course (DELETE)
 adminRouter.delete("/courses/:courseId", authenticateAdmin, async (req, res) => {
     const { courseId } = req.params;
-    const createrId = req.adminId;
+    const creatorId = req.adminId; // 💡 TYPO FIXED
     
-    let objectCourseId, objectCreaterId;
+    let objectCourseId, objectCreatorId;
 
     try {
-        // 💡 FIX 3: Convert string IDs to Mongoose ObjectIds
         objectCourseId = new mongoose.Types.ObjectId(courseId);
-        objectCreaterId = new mongoose.Types.ObjectId(createrId);
+        objectCreatorId = new mongoose.Types.ObjectId(creatorId); // 💡 TYPO FIXED
     } catch (e) {
         return res.status(400).json({ message: "Invalid ID format provided." });
     }
 
     try {
-        // 🛑 FIX 4: USE THE CONVERTED OBJECT IDs in the query
-        const result = await courseModel.deleteOne({ _id: objectCourseId, createrId: objectCreaterId });
+        // 💡 TYPO FIXED in query
+        const result = await courseModel.deleteOne({ _id: objectCourseId, creatorId: objectCreatorId });
 
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: "Course not found or unauthorized." });
@@ -149,6 +150,5 @@ adminRouter.delete("/courses/:courseId", authenticateAdmin, async (req, res) => 
         res.status(500).json({ message: "Failed to delete course" });
     }
 });
-
 
 module.exports = { adminRouter };

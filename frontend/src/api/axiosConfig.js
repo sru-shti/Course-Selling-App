@@ -1,12 +1,10 @@
 // src/api/axiosConfig.js
 import axios from "axios";
 
+// frontend/src/api/axiosConfig.js
 const axiosInstance = axios.create({
-  // Base URL is correct: http://localhost:3000/api/v1
-  baseURL: "http://localhost:3000/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // Change 3000 to 3001
+  baseURL: "http://localhost:3001/api/v1", 
   withCredentials: true,
 });
 

@@ -1,90 +1,146 @@
 // src/pages/Login.jsx
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { GoogleLogin } from '@react-oauth/google'; // <--- 1. Import Google Component
+import axiosInstance from "../api/axiosConfig";     // <--- 2. Import Axios
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, setToken, setUser, setRole } = useAuth();
+  const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false); // Keeps your Admin toggle
 
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const validate = () => {
-    const newErrors = {};
+  // --- GOOGLE LOGIN SUCCESS HANDLER ---
+  const handleGoogleSuccess = async (credentialResponse) => {
+      try {
+          // Send the token to your backend
+          const res = await axiosInstance.post("/user/google", {
+              token: credentialResponse.credential
+          });
 
-    if (!email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(email))
-      newErrors.email = "Enter a valid email";
+          // Save data to localStorage & Context
+          localStorage.setItem("token", res.data.token);
+          setToken(res.data.token);
+          
+          const userData = { firstName: res.data.firstName, email: res.data.email };
+          setUser(userData);
+          localStorage.setItem("user", JSON.stringify(userData));
+          
+          // Google logins are always 'user' role in this system
+          setRole("user"); 
+          localStorage.setItem("role", "user");
 
-    if (!password.trim()) newErrors.password = "Password is required";
-    else if (password.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
+          alert("Google Login Successful!");
+          navigate("/courses");
+      } catch (err) {
+          console.error("Google Login Error:", err);
+          alert("Google login failed.");
+      }
+  };
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // --- EXISTING VALIDATION & SUBMIT ---
+  const validate = () => {
+    const newErrors = {};
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!password.trim()) newErrors.password = "Password is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
 
-    setLoading(true);
-    try {
-      await login(email, password, isAdmin);
-    } catch (err) {
-      alert("Login failed. Check credentials.");
-    }
-    setLoading(false);
-  };
+    setLoading(true);
+    try {
+      // Your existing login function supports (email, password, isAdmin)
+      await login(email, password, isAdmin);
+    } catch (err) {
+      alert("Login failed. Check credentials.");
+    }
+    setLoading(false);
+  };
 
-  return (
-    <div className="form-container">
-      <form onSubmit={handleSubmit} className="form-box">
-        <h2>{isAdmin ? "Admin Login" : "User Login"}</h2>
+  return (
+    <div className="form-container">
+      <div className="form-box">
+        <h2 className="gradient-text" style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+            {isAdmin ? "Admin Portal" : "Welcome Back"}
+        </h2>
 
-        {/* Email Input */}
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="input-field" // 💡 Use global input class
-        />
-        {errors.email && <small className="error">{errors.email}</small>}
+        {/* Only show Google Login if NOT trying to be an Admin.
+            (Usually Admins must use password for security)
+        */}
+        {!isAdmin && (
+            <>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => console.log('Login Failed')}
+                        shape="pill"
+                    />
+                </div>
+                <div style={{textAlign: 'center', margin: '15px 0', color: '#94a3b8', fontSize: '0.9rem'}}>
+                    — OR —
+                </div>
+            </>
+        )}
 
-        {/* Password Input */}
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="input-field" // 💡 Use global input class
-        />
-        {errors.password && <small className="error">{errors.password}</small>}
+        {/* EXISTING FORM */}
+        <form onSubmit={handleSubmit}>
 
-        {/* Checkbox */}
-        <label className="checkbox-label mb-6">
-          <input
-            type="checkbox"
-            checked={isAdmin}
-            onChange={() => setIsAdmin(!isAdmin)}
-            className="checkbox-input"
-          />
-          Login as Admin
-        </label>
+            {/* Email Input */}
+            <div style={{marginBottom: '15px'}}>
+                <input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-field"
+                />
+                {errors.email && <small className="error" style={{color: '#ef4444'}}>{errors.email}</small>}
+            </div>
 
-        {/* Submit Button */}
-        <button 
-          type="submit" 
-          disabled={loading}
-          className={`btn-primary ${loading ? 'btn-disabled' : ''}`}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-    </div>
-  );
+            {/* Password Input */}
+            <div style={{marginBottom: '15px'}}>
+                <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                />
+                {errors.password && <small className="error" style={{color: '#ef4444'}}>{errors.password}</small>}
+            </div>
+
+            {/* Admin Checkbox */}
+            <label className="checkbox-label" style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', cursor: 'pointer'}}>
+                <input
+                    type="checkbox"
+                    checked={isAdmin}
+                    onChange={() => setIsAdmin(!isAdmin)}
+                    style={{width: '18px', height: '18px', accentColor: '#4f46e5'}}
+                />
+                <span style={{color: '#475569', fontSize: '0.95rem'}}>Login as Admin</span>
+            </label>
+
+            {/* Submit Button */}
+            <button 
+                type="submit" 
+                disabled={loading}
+                className="btn-primary" // Make sure this matches your CSS for the blue button
+                style={{width: '100%', padding: '12px', borderRadius: '8px', fontSize: '1rem'}}
+            >
+                {loading ? "Verifying..." : (isAdmin ? "Admin Access" : "Secure Login")}
+            </button>
+        </form>
+      </div>
+    </div>
+  );
 }

@@ -23,8 +23,9 @@ const courseSchema = new Schema({
   description: String,
   price: Number,
   imgUrl: String,
+  videoUrl: String,
   // 💡 Use Mongoose.Schema.Types.ObjectId for explicit reference
-  createrId: { type: ObjectId, ref: 'admin' }, 
+  creatorId: { type: ObjectId, ref: 'admin' }, 
 });
 
 const purchaseSchema = new Schema({
