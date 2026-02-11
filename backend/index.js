@@ -11,12 +11,12 @@ const { adminRouter } = require("./routes/admin");
 const app = express();
 
 // 1. GLOBAL MIDDLEWARE
+// 1. GLOBAL MIDDLEWARE
 app.use(cors({ 
-    // 👇 Added your Vercel URL right next to localhost!
     origin: [
         "http://localhost:5173", 
         "http://127.0.0.1:5173", 
-        "https://course-selling-platform-learnnova.onrender.com/" // Change this to your exact Vercel link
+        "https://course-selling-app-ten.vercel.app" // 👈 FIXED: Added 'app' and removed the slash!
     ], 
     credentials: true 
 }));
