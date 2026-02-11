@@ -1,59 +1,71 @@
-Course Selling Platform (MERN)
-A full-stack web application that allows administrators to manage and sell online courses while enabling users to browse and purchase them.
+# 🎓 LearnNova - Full-Stack Course Selling Platform
 
-🚀 Features:
+![MERN Stack](https://img.shields.io/badge/Stack-MERN-blue?logo=react)
+![Deployed on Vercel](https://img.shields.io/badge/Deployed-Vercel-black?logo=vercel)
+![Deployed on Render](https://img.shields.io/badge/Deployed-Render-black?logo=render)
 
-**For Admins
-Secure Authentication: Register and login using JWT-based authentication.
+LearnNova is a comprehensive, responsive course-selling application built using the MERN stack. It empowers creators to upload and manage educational content while providing students with a seamless, mobile-optimized learning experience.
 
-Course Management: Full CRUD (Create, Read, Update, Delete) capabilities for courses.
+### 🌍 Live Demo
+* **Frontend:** [LearnNova on Vercel](https://course-selling-app-ten.vercel.app)
+* **Backend API:** [LearnNova on Render](https://course-selling-platform-learnnova.onrender.com)
 
-Admin Dashboard: A private interface to track all uploaded content and pricing.
+---
 
-**For Users
-Course Marketplace: Browse a library of available courses.
+## ✨ Key Features
 
-Purchase System: Ability to buy courses and link them to a user profile.
+### 👨‍💻 Admin / Creator Studio
+* **Secure Authentication:** JWT-based login and route protection.
+* **Course Management:** Full CRUD operations for courses (Title, Description, Price, Thumbnails).
+* **Smart Media Uploads:** Integrated with Cloudinary for seamless video hosting.
+* **Dynamic File Handling:** Backend intelligently switches between parsing `multipart/form-data` for new file uploads and `application/json` for text-only updates.
 
-Personal Library: A "My Courses" section to view all purchased content.
+### 🧑‍🎓 Student Experience
+* **Responsive UI:** Custom CSS ensuring a perfect layout across desktop, tablet, and mobile devices.
+* **Optimized Video Player:** Custom React video player featuring Cloudinary's on-the-fly transcoding. Automatically forces `H.264 MP4` formats and `playsInline` attributes to ensure 100% compatibility with strict Android and iOS mobile browsers.
+* **Frictionless Browsing:** Browse available courses, view detailed descriptions, and seamlessly check out.
 
-🛠️ Tech Stack
-Frontend: React.js
-Backend: Node.js, Express.js
-Database: MongoDB
-Authentication: JSON Web Tokens (JWT) & Bcrypt for password hashing
-Styling: Custom CSS 
+---
 
-├── server/             # Backend (Node/Express)
-│   ├── routes/         # Admin and User API routes
-│   ├── models/         # MongoDB Schemas
-│   ├── middleware/     # Auth verification logic
-│   └── index.js        # Entry point
-└── client/             # Frontend (React)
-    ├── src/
-    │   ├── components/ # Reusable UI components
-    │   └── pages/      # Login, Signup, Dashboard, Marketplace
-    └── App.js          # Routing logic
+## 🛠️ Tech Stack
 
-⚙️ Installation & Setup
-1 . Clone the repository:
+**Frontend:**
+* React.js (Vite)
+* React Router DOM
+* Axios (API calls)
+* CSS3 (Custom responsive styling & flexbox/grid architectures)
 
-git clone https://github.com/your-username/course-selling-app.git
+**Backend:**
+* Node.js & Express.js
+* MongoDB & Mongoose (Database & Schemas)
+* JSON Web Tokens (JWT) & bcryptjs (Security)
+* Multer (Handling `FormData` boundaries)
+* Cloudinary API (Media storage and optimization)
 
-2 . Setup Backend:
+---
 
--Navigate to the server folder.
--Create a .env file and add your MONGODB_URL and JWT_SECRET.
--Run: npm install then node index.js.
+## 🚀 Local Setup & Installation
 
-3 . Setup Frontend:
+To run this project locally on your machine, follow these steps:
 
--Navigate to the client folder.
--Run: npm install then npm start.
+### 1. Clone the repository ---
 
-🛡️ API Endpoints:
-Method,Endpoint,Access,Description
-POST,/admin/signup,Public,Register a new admin
-POST,/admin/courses,Admin,Create a new course
-GET,/users/courses,Public,View all courses
-POST,/users/courses/:id,User,Purchase a specific course
+git clone [https://github.com/](https://github.com/)<your-username>/<your-repo-name>.git
+cd <your-repo-name>
+
+### 2. Backend Setup---
+   
+cd backend
+npm install
+
+### 3. Start the backend server---
+
+node index.js
+
+### 4. Frontend Setup---
+
+cd frontend
+npm install
+
+### 5.Start the React development server---
+npm run dev
