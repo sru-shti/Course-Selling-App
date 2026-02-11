@@ -45,6 +45,7 @@ export default function CourseDetail() {
             {course.title}
         </h2>
       </div>
+      
 {/* --- NATIVE HTML5 VIDEO PLAYER --- */}
       {course.videoUrl ? (
           <div style={{
@@ -52,23 +53,22 @@ export default function CourseDetail() {
               backgroundColor: '#000', 
               borderRadius: '12px',
               overflow: 'hidden',
-              boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
               marginBottom: '2rem',
               display: 'flex',
               justifyContent: 'center'
           }}>
-            
-            {/* We replaced ReactPlayer with the native <video> tag */}
             <video 
                 controls 
+                playsInline /* 👈 CRUCIAL: Tells iPhones not to force fullscreen/break */
+                preload="metadata" /* 👈 Helps mobile load the video length faster */
                 width="100%" 
-                style={{ maxHeight: '500px', backgroundColor: 'black' }}
+                style={{ maxHeight: '500px', backgroundColor: 'black', objectFit: 'contain' }}
                 controlsList="nodownload"
             >
                 <source src={course.videoUrl} type="video/mp4" />
                 Your browser does not support the video player.
             </video>
-
           </div>
       ) : (
           /* Fallback if there is no video */
@@ -82,15 +82,17 @@ export default function CourseDetail() {
       )}
       
       {/* Course Info */}
-      <div style={{background: '#f8fafc', padding: '2rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-             <h3 style={{color: '#4f46e5', margin: 0}}>About This Course</h3>
+      {/* 👇 Changed padding from 2rem to a flexible percentage/rem combo */}
+      <div style={{background: '#f8fafc', padding: '5%', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
+          {/* 👇 Added flexWrap so the price badge doesn't squish the text on small screens */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+             <h3 style={{color: '#4f46e5', margin: 0, fontSize: '1.5rem'}}>About This Course</h3>
              <span style={{background: '#e0e7ff', color: '#4f46e5', padding: '4px 12px', borderRadius: '20px', fontWeight: 'bold'}}>
                 ₹{course.price}
              </span>
           </div>
           
-          <p style={{color: '#475569', lineHeight: '1.8', fontSize: '1.1rem'}}>
+          <p style={{color: '#475569', lineHeight: '1.6', fontSize: '1rem'}}>
             {course.description}
           </p>
       </div>
