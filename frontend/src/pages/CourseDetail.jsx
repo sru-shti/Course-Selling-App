@@ -45,8 +45,7 @@ export default function CourseDetail() {
             {course.title}
         </h2>
       </div>
-      
-{/* --- NATIVE HTML5 VIDEO PLAYER --- */}
+ {/* --- NATIVE HTML5 VIDEO PLAYER --- */}
       {course.videoUrl ? (
           <div style={{
               width: '100%',
@@ -56,19 +55,30 @@ export default function CourseDetail() {
               boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
               marginBottom: '2rem',
               display: 'flex',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              flexDirection: 'column', /* Added to stack the fallback link */
+              alignItems: 'center'
           }}>
             <video 
                 controls 
-                playsInline /* 👈 CRUCIAL: Tells iPhones not to force fullscreen/break */
-                preload="metadata" /* 👈 Helps mobile load the video length faster */
+                playsInline 
+                preload="auto" /* 👈 Changed from metadata to auto to force Android to grab it */
                 width="100%" 
                 style={{ maxHeight: '500px', backgroundColor: 'black', objectFit: 'contain' }}
                 controlsList="nodownload"
             >
-                <source src={course.videoUrl} type="video/mp4" />
+                {/* 👈 Removed the strict type="video/mp4" so Android doesn't get confused! */}
+                <source src={course.videoUrl} /> 
+                
                 Your browser does not support the video player.
             </video>
+            
+            {/* 👈 Added a fallback button: if the player fails, they can still watch it! */}
+            <div style={{ padding: '10px' }}>
+                <a href={course.videoUrl} target="_blank" rel="noreferrer" style={{ color: '#a5b4fc', fontSize: '0.85rem' }}>
+                    Video not playing? Click here to open it directly.
+                </a>
+            </div>
           </div>
       ) : (
           /* Fallback if there is no video */
