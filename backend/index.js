@@ -16,7 +16,7 @@ app.use(cors({
     origin: [
         "http://localhost:5173", 
         "http://127.0.0.1:5173", 
-        "https://course-selling-app-ten.vercel.app/" // Change this to your exact Vercel link
+        "https://course-selling-platform-learnnova.onrender.com/" // Change this to your exact Vercel link
     ], 
     credentials: true 
 }));
