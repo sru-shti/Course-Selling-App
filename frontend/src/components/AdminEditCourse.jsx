@@ -68,7 +68,7 @@ export default function AdminEditCourse() {
         formData.append("videoFile", videoFile); 
       }
 
-      await axiosInstance.put(`/admin/course/${id}`, formData, {
+      await axiosInstance.put(`/admin/courses/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

@@ -78,23 +78,28 @@ adminRouter.get("/courses", authenticateAdmin, async (req, res) => {
         res.status(500).json({ message: "Failed to fetch admin courses" });
     }
 });
-
 // 3. Update Course (PUT)
-adminRouter.put("/courses/:courseId", authenticateAdmin, async (req, res) => {
+// 👇 ADDED upload.single('videoFile') so it can read FormData!
+adminRouter.put("/courses/:courseId", authenticateAdmin, upload.single('videoFile'), async (req, res) => {
     const { courseId } = req.params;
-    const creatorId = req.adminId; // 💡 TYPO FIXED
+    const creatorId = req.adminId; 
     
     let objectCourseId, objectCreatorId;
 
     try {
-        // Convert string IDs to Mongoose ObjectIds for the query
         objectCourseId = new mongoose.Types.ObjectId(courseId);
-        objectCreatorId = new mongoose.Types.ObjectId(creatorId); // 💡 TYPO FIXED
+        objectCreatorId = new mongoose.Types.ObjectId(creatorId); 
     } catch (e) {
         return res.status(400).json({ message: "Invalid ID format provided." });
     }
 
     const updateData = req.body;
+    
+    // 👇 NEW: If a new video file was uploaded, add its Cloudinary URL to the update data!
+    if (req.file && req.file.path) {
+        updateData.videoUrl = req.file.path;
+    }
+
     // Filter out null/empty values so we don't overwrite with blanks
     const validUpdates = Object.fromEntries(
         Object.entries(updateData).filter(([_, v]) => v !== null && v !== "")
@@ -110,7 +115,6 @@ adminRouter.put("/courses/:courseId", authenticateAdmin, async (req, res) => {
 
     try {
         const updatedCourse = await courseModel.findOneAndUpdate(
-            // 💡 TYPO FIXED in query
             { _id: objectCourseId, creatorId: objectCreatorId }, 
             validUpdates,
             { new: true }
@@ -126,7 +130,6 @@ adminRouter.put("/courses/:courseId", authenticateAdmin, async (req, res) => {
         res.status(500).json({ message: "Failed to update course" });
     }
 });
-
 // 4. Delete Course (DELETE)
 adminRouter.delete("/courses/:courseId", authenticateAdmin, async (req, res) => {
     const { courseId } = req.params;
