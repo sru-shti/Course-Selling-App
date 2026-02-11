@@ -35,7 +35,7 @@ export default function CourseDetail() {
   if (error) return <div style={{textAlign: 'center', marginTop: '50px', color: 'red'}}>{error}</div>;
   if (!course) return <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem'}}>Loading course details...</div>;
 
-      // 🪄 CLOUDINARY MAGIC: Forces any weird downloaded video format to become a mobile-friendly MP4
+  // 🪄 CLOUDINARY MAGIC: Forces any weird downloaded video format to become a mobile-friendly MP4
   const getOptimizedVideoUrl = (url) => {
       if (!url) return "";
       
@@ -61,7 +61,7 @@ export default function CourseDetail() {
         </h2>
       </div>
       
-{/* --- NATIVE HTML5 VIDEO PLAYER --- */}
+      {/* --- NATIVE HTML5 VIDEO PLAYER --- */}
       {course.videoUrl ? (
           <div style={{
               width: '100%',
@@ -83,18 +83,11 @@ export default function CourseDetail() {
                 style={{ maxHeight: '500px', backgroundColor: 'black', objectFit: 'contain' }}
                 controlsList="nodownload"
             >
-                {/* 👇 Notice we wrap the course.videoUrl in our magic function here! */}
+                {/* Notice we wrap the course.videoUrl in our magic function here! */}
                 <source src={getOptimizedVideoUrl(course.videoUrl)} type="video/mp4" /> 
                 
                 Your browser does not support the video player.
             </video>
-
-            {/* Fallback Link */}
-            <div style={{ padding: '10px' }}>
-                <a href={getOptimizedVideoUrl(course.videoUrl)} target="_blank" rel="noreferrer" style={{ color: '#a5b4fc', fontSize: '0.85rem' }}>
-                    Video not playing? Click here to open it directly.
-                </a>
-            </div>
           </div>
       ) : (
           /* Fallback if there is no video */
@@ -108,9 +101,7 @@ export default function CourseDetail() {
       )}
       
       {/* Course Info */}
-      {/* 👇 Changed padding from 2rem to a flexible percentage/rem combo */}
       <div style={{background: '#f8fafc', padding: '5%', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-          {/* 👇 Added flexWrap so the price badge doesn't squish the text on small screens */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
              <h3 style={{color: '#4f46e5', margin: 0, fontSize: '1.5rem'}}>About This Course</h3>
              <span style={{background: '#e0e7ff', color: '#4f46e5', padding: '4px 12px', borderRadius: '20px', fontWeight: 'bold'}}>
