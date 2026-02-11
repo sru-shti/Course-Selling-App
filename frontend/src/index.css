@@ -18,19 +18,19 @@ body {
 }
 
 :root {
-  --primary: #4f46e5; /* Indigo/Purple tone */
-  --secondary: #ec4899; /* Pink tone for gradients */
+  --primary: #4f46e5; 
+  --secondary: #ec4899; 
   --dark: #0f172a;
   --light: #f8fafc;
   --gray: #64748b;
-  --gradient-text: linear-gradient(to right, #db2777, #7c3aed); /* Pink to Purple */
+  --gradient-text: linear-gradient(to right, #db2777, #7c3aed); 
   --gradient-btn: linear-gradient(to right, #4f46e5, #7c3aed);
   --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.1);
 }
 
 body {
   margin: 0;
-  font-family: 'Outfit', sans-serif; /* Matches the clean font in screenshots */
+  font-family: 'Outfit', sans-serif; 
   background-color: #f3f4f6;
   color: var(--dark);
 }
@@ -74,7 +74,7 @@ body {
   color: var(--primary);
 }
 
-/* --- NAVBAR STYLES (SkillForge Look) --- */
+/* --- NAVBAR STYLES --- */
 .app-navbar {
   background: white;
   padding: 1rem 2rem;
@@ -110,7 +110,7 @@ body {
   gap: 2rem;
   background: #f8fafc;
   padding: 0.5rem 1.5rem;
-  border-radius: 50px; /* The "Capsule" look from screenshot */
+  border-radius: 50px; 
   border: 1px solid #e2e8f0;
 }
 
@@ -215,7 +215,7 @@ body {
   gap: 4rem;
   padding: 3rem 1rem;
   background: white;
-  margin-top: -2rem; /* Pulls it up slightly to connect with Hero visual flow */
+  margin-top: -2rem; 
   position: relative;
   z-index: 1;
 }
@@ -232,7 +232,7 @@ body {
 .stat-number {
   font-size: 3rem;
   font-weight: 800;
-  color: #4f46e5; /* Primary Purple */
+  color: #4f46e5; 
   line-height: 1;
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
@@ -241,7 +241,7 @@ body {
 }
 
 .stat-label {
-  color: #64748b; /* Gray-500 */
+  color: #64748b; 
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.85rem;
@@ -251,7 +251,7 @@ body {
 .stat-divider {
   width: 1px;
   height: 60px;
-  background: #e2e8f0; /* Light Gray border */
+  background: #e2e8f0; 
 }
 
 /* --- FEATURED COURSES SECTION --- */
@@ -304,7 +304,7 @@ body {
 /* --- CTA (Call to Action) SECTION --- */
 .cta-container {
   max-width: 1200px;
-  margin: 4rem auto 6rem; /* Bottom margin for spacing */
+  margin: 4rem auto 6rem; 
   background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   border-radius: 2rem;
   padding: 4rem 2rem;
@@ -352,39 +352,12 @@ body {
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-/* Background circles for CTA visual interest */
 .cta-circle {
   position: absolute;
   background: rgba(255,255,255,0.1);
   border-radius: 50%;
 }
 
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-  .hero-container {
-    flex-direction: column;
-    text-align: center;
-    padding: 1.5rem;
-  }
-  
-  .hero-buttons {
-    justify-content: center;
-  }
-  
-  .hero-features {
-    justify-content: center;
-  }
-
-  .stats-container {
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  .stat-divider {
-    width: 50px;
-    height: 1px;
-  }
-}
 /* Floating Icons (React, HTML, CSS logos) */
 .floating-icon {
   position: absolute;
@@ -394,38 +367,36 @@ body {
   box-shadow: 0 10px 20px rgba(0,0,0,0.08);
   animation: float 6s ease-in-out infinite;
 }
+
 @keyframes float {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-15px); }
   100% { transform: translateY(0px); }
 }
 
-/* Update the Grid to have more breathing room */
+/* --- COURSE LIST & CARDS --- */
 .course-list-grid {
     display: grid;
-    /* This ensures cards are at least 320px wide but stretch nicely */
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-    gap: 2.5rem; /* Increased gap between cards */
-    padding: 1rem 0; /* Remove side padding so it aligns with header */
+    gap: 2.5rem; 
+    padding: 1rem 0; 
 }
 
-/* Make the Container consistent */
 .courses-page-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 3rem 2rem; /* More space around the whole page */
+    padding: 3rem 2rem; 
 }
 
-/* Polish the Card Look */
 .course-card {
     background: white;
-    border: 1px solid #f1f5f9; /* Very subtle border */
-    border-radius: 1rem; /* Softer, rounder corners */
-    padding: 1.5rem; /* More internal breathing room */
+    border: 1px solid #f1f5f9; 
+    border-radius: 1rem; 
+    padding: 1.5rem; 
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    height: 100%; /* Ensures all cards in a row are same height */
+    height: 100%; 
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -435,50 +406,37 @@ body {
 }
 
 .course-image {
-    height: 200px; /* Fixed height for consistency */
+    height: 200px; 
     border-radius: 0.75rem;
     margin-bottom: 1rem;
 }
 
-/* --- COURSE CARD BUY BUTTON --- */
 .btn-buy {
-  /* 1. Gradient Background (Matches your theme) */
   background: var(--gradient-btn); 
-  
-  /* 2. Text Styling */
   color: white;
   font-weight: 700;
   font-size: 0.95rem;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  
-  /* 3. Shape & Size */
-  width: 100%;           /* Full width of the card */
-  padding: 12px 0;       /* Taller hit area */
+  width: 100%;          
+  padding: 12px 0;      
   border: none;
-  border-radius: 50px;   /* Pill Shape */
+  border-radius: 50px;  
   cursor: pointer;
-  margin-top: auto;      /* Pushes to bottom of flex container */
-  
-  /* 4. The "Glow" Shadow */
+  margin-top: auto;      
   box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
-  
-  /* 5. Smooth Animation */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hover: Lift and Glow Brighter */
 .btn-buy:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.5); /* Stronger purple glow */
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.5); 
 }
 
-/* Active: Press Down */
 .btn-buy:active {
   transform: translateY(-1px);
   box-shadow: 0 5px 12px rgba(124, 58, 237, 0.4);
 }
-
 
 /* --- FACULTY PAGE STYLES --- */
 .faculty-card {
@@ -488,7 +446,7 @@ body {
   text-align: center;
   box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05);
   transition: transform 0.3s ease;
-  position: relative; /* For the floating badge */
+  position: relative; 
   border: 1px solid #f1f5f9;
 }
 
@@ -515,10 +473,10 @@ body {
 
 .exp-badge {
   position: absolute;
-  top: 130px; /* Position right below the image */
+  top: 130px; 
   left: 50%;
   transform: translateX(-50%);
-  background: #22c55e; /* Green color */
+  background: #22c55e; 
   color: white;
   padding: 4px 12px;
   border-radius: 20px;
@@ -556,19 +514,16 @@ body {
   min-height: 80vh;
 }
 
-/* The Glowing Form Box */
 .contact-form-box {
   flex: 1;
   background: white;
   padding: 2.5rem;
   border-radius: 20px;
-  /* This creates the purple/pink glow effect */
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.15), 
               0 0 0 1px rgba(168, 85, 247, 0.1); 
   position: relative;
 }
 
-/* Form Row (Two inputs side-by-side) */
 .form-row {
   display: flex;
   gap: 1.5rem;
@@ -600,14 +555,14 @@ body {
 
 .contact-input:focus {
   outline: none;
-  border-color: #7c3aed; /* Purple focus */
+  border-color: #7c3aed; 
   background: white;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .btn-send {
   width: 100%;
-  background: #64748b; /* Dark Gray button from screenshot */
+  background: #64748b; 
   color: white;
   padding: 14px;
   border: none;
@@ -621,7 +576,6 @@ body {
   background: #475569;
 }
 
-/* Illustration Side */
 .contact-img-container {
   flex: 1;
   display: flex;
@@ -630,45 +584,84 @@ body {
 
 .contact-img {
   max-width: 100%;
-  animation: float 6s ease-in-out infinite; /* Reusing your float animation */
+  animation: float 6s ease-in-out infinite; 
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .contact-container {
-    flex-direction: column-reverse;
-    padding: 1rem;
-  }
-  .form-row {
-    flex-direction: column;
-    gap: 1rem;
-  }
+.contact-header {
+  text-align: center;
+  padding-top: 3rem;
+  margin-bottom: 3rem;
 }
-/* --- LOGIN & SIGNUP PAGE STYLES --- */
 
-/* 1. The Page Background & Centering */
-.form-container {
-  min-height: 80vh; /* Takes up most of the screen height */
+.contact-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.contact-divider {
+  width: 60px;
+  height: 4px;
+  background: #ec4899;
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+.contact-footer {
+  text-align: center;
+  padding-bottom: 3rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.btn-whatsapp {
+  width: 100%;
+  background: #25D366; 
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f8fafc; /* Light gray background */
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp:hover {
+  background: #20bd5a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+}
+
+/* --- LOGIN & SIGNUP PAGE STYLES --- */
+.form-container {
+  min-height: 80vh; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc; 
   padding: 1rem;
 }
 
-/* 2. The White Card "Box" */
 .form-box {
   background: white;
   width: 100%;
-  max-width: 420px; /* Limits width so it doesn't stretch */
+  max-width: 420px; 
   padding: 2.5rem;
-  border-radius: 24px; /* Large rounded corners */
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); /* Soft, deep shadow */
+  border-radius: 24px; 
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); 
   border: 1px solid #f1f5f9;
   text-align: center;
 }
 
-/* 3. The Inputs */
 .input-field {
   width: 100%;
   padding: 14px 16px;
@@ -677,26 +670,25 @@ body {
   border-radius: 12px;
   font-size: 0.95rem;
   color: #1e293b;
-  margin-bottom: 1rem; /* Space between inputs */
+  margin-bottom: 1rem; 
   transition: all 0.2s ease;
-  box-sizing: border-box; /* Ensures padding doesn't break width */
+  box-sizing: border-box; 
 }
 
 .input-field:focus {
   outline: none;
   background: white;
-  border-color: #7c3aed; /* Purple focus color */
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1); /* Soft purple ring */
+  border-color: #7c3aed; 
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1); 
 }
 
-/* 4. The "Secure Login" Button */
 .btn-primary {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); /* Gradient matching Navbar */
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); 
   color: white;
   border: none;
-  border-radius: 50px; /* Pill shape */
+  border-radius: 50px; 
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -716,7 +708,6 @@ body {
   box-shadow: none;
 }
 
-/* 5. The "— OR —" Divider */
 .divider-container {
   display: flex;
   align-items: center;
@@ -736,20 +727,19 @@ body {
   padding: 0 10px;
 }
 
-/* 6. Admin Checkbox Styling */
 .checkbox-container {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 1.5rem;
   cursor: pointer;
-  justify-content: flex-start; /* Aligns left */
+  justify-content: flex-start; 
 }
 
 .checkbox-input {
   width: 18px;
   height: 18px;
-  accent-color: #7c3aed; /* Purple checkmark */
+  accent-color: #7c3aed; 
   cursor: pointer;
 }
 
@@ -804,22 +794,6 @@ body {
   gap: 1.5rem;
 }
 
-.form-group label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #64748b;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
 /* Custom File Upload Look */
 .video-input-wrapper {
   position: relative;
@@ -829,7 +803,7 @@ body {
   position: absolute;
   right: 15px;
   top: 40px;
-  color: #ef4444; /* YouTube Red */
+  color: #ef4444; 
 }
 
 .btn-create {
@@ -853,8 +827,6 @@ body {
 }
 
 /* --- ADMIN DASHBOARD STYLES --- */
-
-/* 1. Dashboard Header (Title + Add Button) */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -890,14 +862,12 @@ body {
   box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
 }
 
-/* 2. The Grid Layout */
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
 }
 
-/* 3. The Course Card */
 .admin-course-card {
   background: white;
   border-radius: 16px;
@@ -907,7 +877,7 @@ body {
   display: flex;
   flex-direction: column;
   transition: transform 0.2s;
-  height: 100%; /* Ensures all cards are same height */
+  height: 100%; 
 }
 
 .admin-course-card:hover {
@@ -924,7 +894,7 @@ body {
 
 .admin-card-body {
   padding: 1.5rem;
-  flex: 1; /* Pushes the footer to the bottom */
+  flex: 1; 
   display: flex;
   flex-direction: column;
 }
@@ -942,7 +912,7 @@ body {
   color: #64748b;
   margin-bottom: 1rem;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limits text to 3 lines */
+  -webkit-line-clamp: 3; 
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -951,10 +921,9 @@ body {
   font-size: 1.1rem;
   font-weight: 700;
   color: #7c3aed;
-  margin-top: auto; /* Pushes to bottom of body */
+  margin-top: auto; 
 }
 
-/* 4. The Action Buttons (Edit/Delete) */
 .admin-card-actions {
   padding: 1rem 1.5rem;
   background: #f8fafc;
@@ -989,69 +958,13 @@ body {
 }
 .btn-delete:hover { background: #fecaca; }
 
-/* --- CONTACT PAGE STYLES --- */
-.contact-header {
-  text-align: center;
-  padding-top: 3rem;
-  margin-bottom: 3rem;
-}
-
-.contact-title {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 800;
-}
-
-.contact-divider {
-  width: 60px;
-  height: 4px;
-  background: #ec4899;
-  margin: 0 auto;
-  border-radius: 2px;
-}
-
-.contact-footer {
-  text-align: center;
-  padding-bottom: 3rem;
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-/* WhatsApp Button */
-.btn-whatsapp {
-  width: 100%;
-  background: #25D366; /* Official WhatsApp Green */
-  color: white;
-  padding: 14px;
-  border: none;
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-}
-
-.btn-whatsapp:hover {
-  background: #20bd5a;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
-}
-
 
 /* =========================================
    📱 THE ULTIMATE MOBILE FIXES
    ========================================= */
 @media (max-width: 768px) {
   
-  /* 1. Fix the Navbar (Stack it nicely instead of squishing) */
+  /* 1. Fix the Navbar */
   .app-navbar {
     padding: 1rem;
     flex-direction: column;
@@ -1064,11 +977,27 @@ body {
     justify-content: center;
   }
 
-  /* 2. Fix the Grids (Stop cards from overflowing the screen) */
+  /* 2. Fix the Grids (Hero, Stats, Admin, Courses) */
   .course-list-grid, 
   .admin-grid {
-    grid-template-columns: 1fr; /* Forces exactly 1 card per row on phones */
+    grid-template-columns: 1fr; 
     gap: 1.5rem;
+  }
+  .hero-container {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  .hero-buttons, .hero-features {
+    justify-content: center;
+  }
+  .stats-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .stat-divider {
+    width: 50px;
+    height: 1px;
   }
 
   /* 3. Reduce Giant Paddings & Margins */
@@ -1091,18 +1020,47 @@ body {
   .stat-number {
     font-size: 2.2rem;
   }
-
-  /* 5. Adjust the Contact Form so inputs stack */
-  .contact-form-box {
-    padding: 1.5rem;
-  }
   
-  /* 6. Fix CTA text and buttons */
+  /* 5. Fix CTA text and buttons */
   .cta-container {
     padding: 2.5rem 1.5rem;
     margin: 2rem 1rem;
   }
   .cta-title {
     font-size: 1.8rem;
+  }
+
+  /* =========================================
+     📱 CONTACT PAGE MOBILE FIXES 
+     ========================================= */
+  
+  /* Stack the form and the image, shrink the gap */
+  .contact-container {
+    flex-direction: column-reverse; 
+    gap: 2rem; 
+    padding: 1rem;
+    min-height: auto; 
+  }
+
+  /* Squeeze the white glowing box to fit the screen */
+  .contact-form-box {
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  /* Force side-by-side inputs (like First/Last name) to stack */
+  .form-row {
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Ensure the illustration doesn't overflow */
+  .contact-img-container {
+    width: 100%;
+  }
+  .contact-img {
+    max-width: 80%; 
+    margin: 0 auto;
   }
 }
