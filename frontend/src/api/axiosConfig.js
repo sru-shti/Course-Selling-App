@@ -4,7 +4,7 @@ import axios from "axios";
 // frontend/src/api/axiosConfig.js
 const axiosInstance = axios.create({
   // Change 3000 to 3001
-  baseURL: "http://localhost:3001/api/v1", 
+  baseURL: "https://course-selling-platform-learnnova.onrender.com", 
   withCredentials: true,
 });
 
