@@ -1,6 +1,22 @@
 /* src/index.css */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
+/* This forces everything to include borders/padding in its width */
+* {
+  box-sizing: border-box;
+}
+
+/* This prevents ANY image or video from stretching wider than the screen */
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* This stops the page from scrolling sideways */
+body {
+  overflow-x: hidden; 
+}
+
 :root {
   --primary: #4f46e5; /* Indigo/Purple tone */
   --secondary: #ec4899; /* Pink tone for gradients */
@@ -1027,4 +1043,66 @@ body {
   background: #20bd5a;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+}
+
+
+/* =========================================
+   📱 THE ULTIMATE MOBILE FIXES
+   ========================================= */
+@media (max-width: 768px) {
+  
+  /* 1. Fix the Navbar (Stack it nicely instead of squishing) */
+  .app-navbar {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nav-links-center {
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* 2. Fix the Grids (Stop cards from overflowing the screen) */
+  .course-list-grid, 
+  .admin-grid {
+    grid-template-columns: 1fr; /* Forces exactly 1 card per row on phones */
+    gap: 1.5rem;
+  }
+
+  /* 3. Reduce Giant Paddings & Margins */
+  .courses-page-container, 
+  .section-container, 
+  .hero-container,
+  .admin-container {
+    padding: 1.5rem 1rem;
+  }
+
+  /* 4. Shrink Giant Text to fit mobile screens */
+  .hero-title {
+    font-size: 2.2rem;
+  }
+  .section-title, 
+  .dashboard-title, 
+  .contact-title {
+    font-size: 1.8rem;
+  }
+  .stat-number {
+    font-size: 2.2rem;
+  }
+
+  /* 5. Adjust the Contact Form so inputs stack */
+  .contact-form-box {
+    padding: 1.5rem;
+  }
+  
+  /* 6. Fix CTA text and buttons */
+  .cta-container {
+    padding: 2.5rem 1.5rem;
+    margin: 2rem 1rem;
+  }
+  .cta-title {
+    font-size: 1.8rem;
+  }
 }
