@@ -50,30 +50,42 @@ export default function AdminEditCourse() {
     fetchCourse();
   }, [id, navigate]);
 
-  // 2. HANDLE UPDATING THE COURSE
+ // 2. HANDLE UPDATING THE COURSE (SMART SUBMIT)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
 
     try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("imgUrl", imgUrl);
+      let payload;
+      let headers = {};
 
-      if (videoType === "url") {
-        formData.append("videoUrl", videoUrl);
-      } else if (videoType === "upload" && videoFile) {
-        formData.append("videoFile", videoFile); 
+      // 🧠 SMART CHECK: Are we uploading a file, or just changing text?
+      if (videoType === "upload" && videoFile) {
+        // SCENARIO 1: They attached a new video file. We MUST use FormData.
+        payload = new FormData();
+        payload.append("title", title);
+        payload.append("description", description);
+        payload.append("price", price);
+        payload.append("imgUrl", imgUrl);
+        payload.append("videoFile", videoFile); 
+        // Note: We deliberately DO NOT set Content-Type here so the browser can set the secret boundary!
+      } else {
+        // SCENARIO 2: They are only updating text/price/links. Send standard JSON!
+        payload = {
+          title: title,
+          description: description,
+          price: price,
+          imgUrl: imgUrl,
+          videoUrl: videoUrl // Send the YouTube/existing link
+        };
+        headers = { "Content-Type": "application/json" };
       }
 
-      await axiosInstance.put(`/admin/courses/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Send the request with our smart payload
+      await axiosInstance.put(`/admin/courses/${id}`, payload, { headers });
 
       alert("Course Updated Successfully!");
-      navigate("/admin/courses");
+      navigate("/admin/courses"); // Send them back to the dashboard
     } catch (err) {
       console.error("Update failed:", err);
       alert("Failed to update course.");
