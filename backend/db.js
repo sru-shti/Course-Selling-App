@@ -18,14 +18,14 @@ const adminSchema = new Schema({
   lastName: String,
 });
 
-const courseSchema = new Schema({
-  title: String,
-  description: String,
-  price: Number,
-  imgUrl: String,
-  videoUrl: String,
-  // 💡 Use Mongoose.Schema.Types.ObjectId for explicit reference
-  creatorId: { type: ObjectId, ref: 'admin' }, 
+const courseSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    price: Number,
+    imgUrl: String,
+    // 👇 YOU MUST ADD THIS LINE
+    videoUrl: String, 
+    creatorId: mongoose.Schema.Types.ObjectId
 });
 
 const purchaseSchema = new Schema({

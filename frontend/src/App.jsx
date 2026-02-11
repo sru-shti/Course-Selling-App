@@ -1,9 +1,10 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+// 🚨 FIXED: Imported useAuth here so ProtectedRoute works!
+import { AuthProvider, useAuth } from "./context/AuthContext"; 
 
 import Navbar from "./components/Navbar";
-import Home from "./pages/Home"; // <--- Import New Home Page
+import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -14,6 +15,10 @@ import Contact from "./pages/Contact";
 import AdminCourses from "./pages/AdminCourses";
 import AdminAddCourse from "./pages/AdminAddCourse";
 import NotFound from "./pages/NotFound";
+
+// 👇 1. IMPORT THE MISSING PAGES HERE
+import CourseDetail from "./pages/CourseDetail";
+import AdminEditCourse from "./components/AdminEditCourse"; // Make sure this path matches your folder structure!
 
 // Custom Component to enforce login and role access
 function ProtectedRoute({ children, adminOnly = false }) {
@@ -27,6 +32,7 @@ function ProtectedRoute({ children, adminOnly = false }) {
   
   return children;
 }
+
 function App() {
   return (
     <Router>
@@ -34,7 +40,7 @@ function App() {
         <Navbar />
         <Routes>
           
-          {/* 💡 CHANGE: The root path now shows Home instead of redirecting */}
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/faculty" element={<Faculty />} />
@@ -43,11 +49,30 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           
-          {/* ... Keep all your existing Protected Routes exactly the same ... */}
-          <Route path="/my-courses" element={<MyCourses />} />
-          <Route path="/admin/courses" element={<AdminCourses />} />
-          <Route path="/admin/add-course" element={<AdminAddCourse />} />
+          {/* Protected User Routes */}
+          <Route path="/my-courses" element={
+            <ProtectedRoute><MyCourses /></ProtectedRoute>
+          } />
           
+          {/* 👇 2. ADDED THE COURSE DETAIL ROUTE */}
+          <Route path="/course/:id" element={
+            <ProtectedRoute><CourseDetail /></ProtectedRoute>
+          } />
+          
+          {/* Protected Admin Routes */}
+          <Route path="/admin/courses" element={
+            <ProtectedRoute adminOnly={true}><AdminCourses /></ProtectedRoute>
+          } />
+          <Route path="/admin/add-course" element={
+            <ProtectedRoute adminOnly={true}><AdminAddCourse /></ProtectedRoute>
+          } />
+          
+          {/* 👇 3. ADDED THE ADMIN EDIT ROUTE */}
+          <Route path="/admin/edit-course/:id" element={
+            <ProtectedRoute adminOnly={true}><AdminEditCourse /></ProtectedRoute>
+          } />
+          
+          {/* 404 Catch-All */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

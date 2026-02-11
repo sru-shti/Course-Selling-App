@@ -26,6 +26,8 @@ app.use((req, res, next) => {
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/course", courseRouter);
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 require("dotenv").config(); // <--- This loads the .env file
 
 app.get("/ping", (req, res) => res.send("pong"));

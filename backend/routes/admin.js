@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const { authenticateAdmin } = require("../middleware/adminAuth"); // Custom middleware
 const { adminModel, courseModel } = require("../db");
 const { JWT_ADMIN_PASSWORD } = require("../config.js");
+const upload = require("../middleware/upload"); // Import the middleware
 
 // Admin Signin (Existing working logic)
 adminRouter.post("/signin", async (req, res) => {
@@ -30,31 +31,35 @@ adminRouter.post("/signin", async (req, res) => {
 
 // 1. Admin Add Course (POST)
 // Full Path: /api/v1/admin/courses
-adminRouter.post("/courses", authenticateAdmin, async (req, res) => {
-    // 💡 Added videoUrl here
+
+adminRouter.post("/courses", authenticateAdmin, upload.single('videoFile'), async (req, res) => {
     const { title, description, price, imgUrl, videoUrl } = req.body;
-    const creatorId = req.adminId; // 💡 TYPO FIXED: createrId -> creatorId
+    const creatorId = req.adminId;
+
+    // 1. Check if a file was uploaded via Cloudinary
+    let finalVideoUrl = videoUrl; // Default to the YouTube link provided
+
+    if (req.file && req.file.path) {
+        // If a file was uploaded, Cloudinary gives us the URL in req.file.path
+        finalVideoUrl = req.file.path;
+    }
 
     if (!title || !description || !price || !imgUrl) {
-        return res.status(400).json({ message: "All fields are required to create a course." });
-    }
-    // Simple validation for price
-    if (isNaN(price) || price < 0) {
-        return res.status(400).json({ message: "Price must be a valid non-negative number." });
+        return res.status(400).json({ message: "Required fields missing." });
     }
 
     try {
         const newCourse = await courseModel.create({
             title,
             description,
-            price: Number(price), 
+            price: Number(price),
             imgUrl,
-            videoUrl, // 💡 Saving the video URL
-            creatorId, // 💡 Saving with correct field name
+            videoUrl: finalVideoUrl, // Use the determined URL
+            creatorId,
         });
         res.json({ message: "Course created successfully", courseId: newCourse._id });
     } catch (err) {
-        console.error("Course creation error:", err);
+        console.error(err);
         res.status(500).json({ message: "Failed to create course" });
     }
 });
@@ -131,7 +136,7 @@ adminRouter.delete("/courses/:courseId", authenticateAdmin, async (req, res) => 
 
     try {
         objectCourseId = new mongoose.Types.ObjectId(courseId);
-        objectCreatorId = new mongoose.Types.ObjectId(creatorId); // 💡 TYPO FIXED
+        objectCreatorId = new mongoose.Types.ObjectId(creatorId); 
     } catch (e) {
         return res.status(400).json({ message: "Invalid ID format provided." });
     }
