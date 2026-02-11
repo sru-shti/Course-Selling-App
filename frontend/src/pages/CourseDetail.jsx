@@ -35,6 +35,21 @@ export default function CourseDetail() {
   if (error) return <div style={{textAlign: 'center', marginTop: '50px', color: 'red'}}>{error}</div>;
   if (!course) return <div style={{textAlign: 'center', marginTop: '50px', fontSize: '1.2rem'}}>Loading course details...</div>;
 
+      // 🪄 CLOUDINARY MAGIC: Forces any weird downloaded video format to become a mobile-friendly MP4
+  const getOptimizedVideoUrl = (url) => {
+      if (!url) return "";
+      
+      // If it's a Cloudinary link, force the extension to be .mp4
+      if (url.includes("cloudinary.com")) {
+          const lastDotIndex = url.lastIndexOf('.');
+          // Make sure we are actually replacing an extension at the end of the URL
+          if (lastDotIndex > url.lastIndexOf('/')) {
+              return url.substring(0, lastDotIndex) + '.mp4';
+          }
+      }
+      return url;
+  };
+
   // MAIN RENDER
   return (
     <div style={{maxWidth: '1000px', margin: '2rem auto', padding: '0 1rem'}}>
@@ -45,7 +60,8 @@ export default function CourseDetail() {
             {course.title}
         </h2>
       </div>
- {/* --- NATIVE HTML5 VIDEO PLAYER --- */}
+      
+{/* --- NATIVE HTML5 VIDEO PLAYER --- */}
       {course.videoUrl ? (
           <div style={{
               width: '100%',
@@ -55,27 +71,27 @@ export default function CourseDetail() {
               boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
               marginBottom: '2rem',
               display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'center',
-              flexDirection: 'column', /* Added to stack the fallback link */
               alignItems: 'center'
           }}>
             <video 
                 controls 
                 playsInline 
-                preload="auto" /* 👈 Changed from metadata to auto to force Android to grab it */
+                preload="auto"
                 width="100%" 
                 style={{ maxHeight: '500px', backgroundColor: 'black', objectFit: 'contain' }}
                 controlsList="nodownload"
             >
-                {/* 👈 Removed the strict type="video/mp4" so Android doesn't get confused! */}
-                <source src={course.videoUrl} /> 
+                {/* 👇 Notice we wrap the course.videoUrl in our magic function here! */}
+                <source src={getOptimizedVideoUrl(course.videoUrl)} type="video/mp4" /> 
                 
                 Your browser does not support the video player.
             </video>
-            
-            {/* 👈 Added a fallback button: if the player fails, they can still watch it! */}
+
+            {/* Fallback Link */}
             <div style={{ padding: '10px' }}>
-                <a href={course.videoUrl} target="_blank" rel="noreferrer" style={{ color: '#a5b4fc', fontSize: '0.85rem' }}>
+                <a href={getOptimizedVideoUrl(course.videoUrl)} target="_blank" rel="noreferrer" style={{ color: '#a5b4fc', fontSize: '0.85rem' }}>
                     Video not playing? Click here to open it directly.
                 </a>
             </div>
