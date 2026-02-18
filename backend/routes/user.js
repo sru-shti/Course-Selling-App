@@ -2,9 +2,9 @@
 const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { OAuth2Client } = require('google-auth-library'); // <--- 1. NEW IMPORT
+const { OAuth2Client } = require('google-auth-library'); 
 
-// --- Imports ---
+
 const { userModel, purchaseModel, courseModel } = require("../db"); 
 const { JWT_USER_PASSWORD } = require("../config.js");
 const { userMiddleware } = require("../middleware/user");
@@ -79,7 +79,7 @@ userRouter.post("/google", async (req, res) => {
    try {
         const ticket = await client.verifyIdToken({
             idToken: token,
-            audience: googleClientId, // 👈 USE THE TRIMMED VARIABLE
+            audience: googleClientId, 
         });
         
         // 2. Get user info from the ticket payload

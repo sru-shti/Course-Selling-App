@@ -1,4 +1,4 @@
-// routes/course.js (Complete Logic)
+// routes/course.js 
 const { Router } = require("express");
 const courseRouter = Router();
 const { userMiddleware } = require("../middleware/user");

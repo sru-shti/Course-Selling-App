@@ -1,14 +1,13 @@
-// src/api/axiosConfig.js
+// frontend/src/api/axiosConfig.js
 import axios from "axios";
 
-// frontend/src/api/axiosConfig.js
 const axiosInstance = axios.create({
-  // Change 3000 to 3001
-  baseURL: "https://course-selling-platform-learnnova.onrender.com/api/v1",
+
+  baseURL:  "https://course-selling-platform-learnnova.onrender.com/api/v1",
+   //"http://localhost:3001/api/v1", // Make sure this matches your backend port!
   withCredentials: true,
 });
 
-// 🔑 CRITICAL FIX: Add a Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
     // 1. Retrieve the token from localStorage

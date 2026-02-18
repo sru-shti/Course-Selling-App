@@ -21,7 +21,7 @@ export default function AdminAddCourse() {
     setLoading(true);
 
     try {
-      // 1. Create FormData object (Required for sending files)
+  
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
@@ -32,7 +32,7 @@ export default function AdminAddCourse() {
       if (videoType === "url") {
         formData.append("videoUrl", videoUrl);
       } else if (videoType === "upload" && videoFile) {
-        formData.append("videoFile", videoFile); // Must match backend: upload.single('videoFile')
+        formData.append("videoFile", videoFile); 
       }
 
       // 3. Send Request (Content-Type header is handled automatically by axios for FormData)

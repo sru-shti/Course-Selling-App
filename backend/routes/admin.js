@@ -71,7 +71,7 @@ adminRouter.get("/courses", authenticateAdmin, async (req, res) => {
 
     try {
         // Find only the courses created by the logged-in admin
-        const courses = await courseModel.find({ creatorId }); // 💡 TYPO FIXED
+        const courses = await courseModel.find({ creatorId }); 
         res.json({ courses });
     } catch (err) {
         console.error("Admin courses fetch error:", err);
@@ -130,10 +130,11 @@ adminRouter.put("/courses/:courseId", authenticateAdmin, upload.single('videoFil
         res.status(500).json({ message: "Failed to update course" });
     }
 });
+
 // 4. Delete Course (DELETE)
 adminRouter.delete("/courses/:courseId", authenticateAdmin, async (req, res) => {
     const { courseId } = req.params;
-    const creatorId = req.adminId; // 💡 TYPO FIXED
+    const creatorId = req.adminId; 
     
     let objectCourseId, objectCreatorId;
 

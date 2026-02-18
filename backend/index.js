@@ -7,6 +7,7 @@ const path = require("path");
 const { userRouter } = require("./routes/user");
 const { courseRouter } = require("./routes/course");
 const { adminRouter } = require("./routes/admin");
+const { aiRouter } = require("./routes/ai");
 
 const app = express();
 
@@ -21,22 +22,13 @@ app.use(cors({
     credentials: true 
 }));
 app.use(express.json()); 
-
-// 2. THE SPY LOGGER (Crucial for debugging)
-app.use((req, res, next) => {
-    console.log(`Incoming: ${req.method} ${req.url}`);
-    next();
-});
-
-// Serve static uploads (if you still have local files)
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-app.get("/ping", (req, res) => res.send("pong"));
+;
 
 // 3. ROUTES
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/ai", aiRouter);
 
 // 4. DATABASE & SERVER
 async function main() {

@@ -23,13 +23,11 @@ const courseSchema = new mongoose.Schema({
     description: String,
     price: Number,
     imgUrl: String,
-    // 👇 YOU MUST ADD THIS LINE
     videoUrl: String, 
     creatorId: mongoose.Schema.Types.ObjectId
 });
 
 const purchaseSchema = new Schema({
-  // 💡 Use Mongoose.Schema.Types.ObjectId for explicit reference
   userId: { type: ObjectId, ref: 'user' },
   courseId: { type: ObjectId, ref: 'course' },
 });
